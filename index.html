@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>Standup Shuffle!</title>
+
+	<link rel="stylesheet" href="dist/reset.css">
+	<link rel="stylesheet" href="dist/reveal.css">
+	<link rel="stylesheet" href="dist/theme/black.css" id="theme">
+
+	<!-- Theme used for syntax highlighted code -->
+	<link rel="stylesheet" href="plugin/highlight/monokai.css" id="highlight-theme">
+	<style>
+		textarea {
+			margin-top: 10px;
+			margin-left: 50px;
+			width: 500px;
+			height: 170px;
+			-moz-border-bottom-colors: none;
+			-moz-border-left-colors: none;
+			-moz-border-right-colors: none;
+			-moz-border-top-colors: none;
+			background: none repeat scroll 0 0 rgba(0, 0, 0, 0.07);
+			border-color: -moz-use-text-color #FFFFFF #FFFFFF -moz-use-text-color;
+			border-image: none;
+			border-radius: 6px 6px 6px 6px;
+			border-style: none solid solid none;
+			border-width: medium 1px 1px medium;
+			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12) inset;
+			color: #555555;
+			font-size: .4em;
+			/* line-height: 1.4em; */
+			padding: 5px 8px;
+			transition: background-color 0.2s ease 0s;
+		}
+
+
+		textarea:focus {
+			background: none repeat scroll 0 0 #FFFFFF;
+			outline-width: 0;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section>
+				<h3>Welcome to Standup Shuffle!</h1>
+					<p>Please enter the names of the participants</p>
+					<div>
+						<textarea name="participants" id="participants" cols="40" rows="20" autocomplete="off"
+							role="textbox" aria-autocomplete="list" aria-haspopup="true"></textarea>
+					</div>
+					<a href="javascript:;" onclick="shuffle();">START!</a>
+					<pre>
+						<code id="code" data-trim data-noescape>
+						</code>
+					</pre>
+			</section>
+		</div>
+	</div>
+
+	<script src="dist/reveal.js"></script>
+	<script src="plugin/notes/notes.js"></script>
+	<script src="plugin/markdown/markdown.js"></script>
+	<script src="plugin/highlight/highlight.js"></script>
+	<script>
+		// More info about initialization & config:
+		// - https://revealjs.com/initialization/
+		// - https://revealjs.com/config/
+		Reveal.initialize({
+			hash: true,
+			overview: true,
+			progress: true,
+			showSlideNumber: 'all',
+			slideNumber: true,
+			center: true,
+			// Learn about plugins: https://revealjs.com/plugins/
+			plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
+		});
+
+		function shuffle() {
+			// Cleans presentation
+			document.querySelectorAll(".future").forEach(el => el.remove());
+
+			const content = document.getElementById('participants');
+			let participants = content.value.split('\n');
+			participants = participants.map(p => p.trim());
+			participants = participants.filter(p => p !== '');
+
+			// Shuffles list using Fisher and Yates method
+			for (let i = participants.length - 1; i > 0; i--) {
+				const j = Math.floor(Math.random() * i)
+				const temp = participants[i]
+				participants[i] = participants[j]
+				participants[j] = temp
+			}
+
+			// Shows order
+			document.getElementById('code').innerHTML = JSON.stringify(participants);
+
+			// Appends new slides
+			participants.map(p => {
+				const slides = document.querySelector('.reveal .slides');
+				const newSlide = document.createElement('section');
+				newSlide.classList.add('future');
+				slides.appendChild(newSlide);
+				document.querySelector('.navigate-right').classList.add('enabled');
+				newSlide.innerHTML = `<h2>${p}</h2>`;
+			});
+			Reveal.sync();
+		}
+	</script>
+</body>
+
+</html>
