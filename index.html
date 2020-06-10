@@ -69,6 +69,9 @@
 	<script src="plugin/markdown/markdown.js"></script>
 	<script src="plugin/highlight/highlight.js"></script>
 	<script>
+		const textContent = document.getElementById('participants');
+		// Fetches content from local storage
+		textContent.value = localStorage.getItem('participants');
 		// More info about initialization & config:
 		// - https://revealjs.com/initialization/
 		// - https://revealjs.com/config/
@@ -87,8 +90,10 @@
 			// Cleans presentation
 			document.querySelectorAll(".future").forEach(el => el.remove());
 
-			const content = document.getElementById('participants');
-			let participants = content.value.split('\n');
+			// Saves content in local storage
+			localStorage.setItem('participants', textContent.value);
+
+			let participants = textContent.value.split('\n');
 			participants = participants.map(p => p.trim());
 			participants = participants.filter(p => p !== '');
 
